@@ -103,3 +103,52 @@ ggplot(day_data, aes(day, Trips))+
         plot.title = element_text(hjust=0.5))+
   scale_y_continuous(labels=comma)
 
+#aggregate by day of the week and month
+
+day_month_data<-data %>% 
+  group_by(dayofweek, month) %>% 
+  dplyr::summarize(Trips=n())
+
+datatable(day_month_data)
+
+#plot the day of the week and month trips
+
+ggplot(day_month_data, aes(month, Trips, fill=dayofweek))+ 
+  geom_bar(stat="identity", aes(fill=dayofweek),position="dodge")+
+  scale_y_continuous(label=comma)+
+  ggtitle("Trips by day and month")+
+  theme(plot.title=element_text(hjust=0.5))+
+  scale_fill_manual(values=color)
+
+
+#number of trips per month every year
+
+month_data<-data %>% 
+  group_by(month) %>% 
+  dplyr::summarize(Trips=n())
+
+datatable(month_data)
+
+#visualize the plot
+
+ggplot(month_data, aes(month, Trips, fill=month))+
+  geom_bar(stat="identity")+
+  scale_y_continuous(label=comma)+
+  theme(legend.position = "none",
+        plot.title=element_text(hjust=0.5))+
+  ggtitle("Trips per month")+
+  scale_fill_manual(values=color)
+
+#day and month aggregation
+
+month_day_data<- data %>% 
+  group_by(month, day) %>% 
+  dplyr::summarize(Trips=n())
+
+datatable(month_day_data)
+
+#visualize
+ggplot(month_day_data, aes(day, month, fill=Trips))+
+  geom_tile(color="white")+
+  ggtitle("Heat map for trips everyday every month")
+
